@@ -182,6 +182,9 @@ export class AuthService {
 
     if (user.user_type === 'STUDENT' && 'code' in user) {
       payload.student_code = user.code;
+      if ('study_plan_id' in user) {
+        payload.study_plan_id = (user as Student).study_plan_id;
+      }
     }
 
     if (user.user_type === 'TEACHER' && 'category' in user) {
@@ -258,6 +261,7 @@ export class AuthService {
       user_type: createStudentDto.role,
 
       code: createStudentDto.studentCode,
+      study_plan_id: createStudentDto.studyPlanId,
       enrolled_at: new Date(),
       birth_date: createStudentDto.birthDate,
       sex: 'M',
@@ -267,7 +271,11 @@ export class AuthService {
   }
 
   private async validateDataStudent(createStudentDto: CreateUserDto) {
-    const { studentCode, nationalId } = createStudentDto;
+    const { studentCode, studyPlanId, nationalId } = createStudentDto;
+
+    if (!studyPlanId) {
+      throw new BadRequestException('studyPlanId is required for students');
+    }
 
     if (studentCode) {
       const existingStudent = await this.studentRepository.findOne({

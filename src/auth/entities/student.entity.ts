@@ -6,6 +6,9 @@ export class Student extends User {
   @Column('varchar', { length: 30, unique: true })
   code: string;
 
+  @Column('uuid')
+  study_plan_id: string;
+
   @Column('date')
   enrolled_at: Date;
 

@@ -9,6 +9,7 @@ import {
   MaxLength,
   MinLength,
   ValidateIf,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -77,6 +78,16 @@ export class CreateUserDto {
   @IsOptional()
   @ValidateIf((o) => o.role === UserRole.STUDENT)
   studentCode?: string;
+
+  @ApiProperty({
+    description: 'Identificador del plan de estudios asignado al estudiante',
+    example: 'b4a4a4a4-0e0e-4abc-9d9d-1234567890ab',
+    required: false,
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  @ValidateIf((o) => o.role === UserRole.STUDENT)
+  studyPlanId: string;
 
   @IsString()
   @IsOptional()
